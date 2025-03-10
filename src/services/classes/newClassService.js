@@ -1,5 +1,5 @@
 
-export const registerUser = async (formData) => {
+export const newClassService = async (formData) => {
     try {
       const response = await fetch("http://localhost:8080/api/class/new", {
         method: "POST",
@@ -9,7 +9,7 @@ export const registerUser = async (formData) => {
         body: JSON.stringify({
             subject: {
               name: formData.subjectName,
-              term: formData.term
+              term: parseInt(formData.term)
             },
             teacher: {id: formData.workerId},
             groupId: formData.groupId,

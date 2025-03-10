@@ -7,6 +7,7 @@ import ManageUsersPage from "./pages/ManageUsersPage";
 
 import ManageClassesPage from "./pages/ManageClassesPage";
 import RegisterClassPage from "./pages/RegisterClassPage";
+import UpdateClassPage from "./pages/UpdateClassPage"
 
 import ReportsPage from "./pages/ReportsPage";
 import GraphsPage from "./pages/GraphsPage";
@@ -24,6 +25,7 @@ const AppRoutes = () => {
         <Route path="/manage-users" element={<ManageUsersPage />} />
         <Route path="/manage-classes" element={<ManageClassesPage />} />
         <Route path="/register-class" element={<RegisterClassPage />} />
+        <Route path="/update-class" element={<UpdateClassPage />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/graphs" element={<GraphsPage />} />
       </Routes>

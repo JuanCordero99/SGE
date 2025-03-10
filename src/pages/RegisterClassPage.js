@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Input from "../components/common/Input";
 import Card from "../components/common/Card";
-import { registerUser } from "../services/students/newStudentService";
+import {newClassService} from "../services/classes/newClassService";
 import Select from "../components/common/Select";
 
 const ManageClassPage = () => {
@@ -38,7 +38,7 @@ const ManageClassPage = () => {
 
   const onSubmit = async () => {
     try {
-      const result = await registerUser(formData);
+      const result = await newClassService(formData);
       if (result) {
         alert("Clase registrada exitosamente");
         navigate("/home");
