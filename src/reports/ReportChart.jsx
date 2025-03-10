@@ -19,7 +19,7 @@ const ReportChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://gse.zeabur.app/sendData/getData");
+        const response = await fetch("https://gse-backend.zeabur.app/sendData/getData");
         const data = await response.json();
 
         // Inicializamos los contadores para luces encendidas y apagadas

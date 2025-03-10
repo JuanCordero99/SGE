@@ -8,7 +8,7 @@ const ReportTable = () => {
     // Función para obtener los datos de la API
     const fetchData = async () => {
       try {
-        const response = await fetch("https://gse.zeabur.app/sendData/getData");
+        const response = await fetch("https://gse-backend.zeabur.app//sendData/getData");
         if (response.ok) {
           const result = await response.json();
           // Transformamos la respuesta de la API para que se ajuste al formato de la tabla

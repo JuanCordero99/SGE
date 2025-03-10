@@ -1,7 +1,7 @@
 // src/services/userService.js
 export const deleteStudent = async (formData) => {
     try {
-      const response = await fetch("http://localhost:8080/api/student/delete", {
+      const response = await fetch("https://gse-backend.zeabur.app//api/student/delete", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
