@@ -1,25 +1,34 @@
 import React, { useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import Input from "../components/common/Input";
 import Card from "../components/common/Card";
-import { registerUser, deleteUser } from "../services/students/userService";
-import SearchBar from "../components/common/searchBar";
-import { searchUser } from "../services/searchUser";
 
-const RegisterUserPage = () => {
+import { registerUser } from "../services/students/newStudentService";
+import { updateStudent } from "../services/students/updateStudentService";
+import {deleteStudent} from "../services/students/deleteStudentService"
+
+import SearchBar from "../components/common/searchBar";
+import { searchUser } from "../services/students/searchStudentService";
+
+const ManageStudentPage = () => {
   const [formData, setFormData] = useState({
     id: "",
     name: "",
     surname: "",
     group_id: "",
+    term: 1,
   });
 
-  const [isUserFound, setIsUserFound] = useState(false); 
+  const [isUserFound, setIsUserFound] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -36,15 +45,18 @@ const RegisterUserPage = () => {
       try {
         if (id.length === 10) {
           const userData = await searchUser(formData);
-          if (userData) {
+          if (userData.success) {
             setFormData({
               id: userData.student.id,
               name: userData.student.name,
               surname: userData.student.surname,
               group_id: userData.student.group_id,
+              term: userData.student.term
             });
             setIsUserFound(true);
-          }
+            console.log("DATA STATUS: " + userData.student.user);
+
+          }else { userData.student.user.status === 0 ? alert("El estudiante es baja") : alert("No se encontro el estudiante");}
         } else {
           alert("La matrícula debe tener exactamente 10 caracteres.");
         }
@@ -54,7 +66,7 @@ const RegisterUserPage = () => {
     }
   };
 
-  const onSubmit = async (formData) => {
+  const onSubmit = async () => {
     try {
       const result = await registerUser(formData);
       if (result) {
@@ -69,28 +81,44 @@ const RegisterUserPage = () => {
   };
 
   const onUpdate = async () => {
-    console.log("Actualizando datos ...");
+    try {
+      const result = await updateStudent(formData);
+      if (result) {
+        alert("Alumno actualizado exitosamente");
+        navigate("/home");
+      } else {
+        alert("Error al realizar acción");
+      }
+    } catch (error) {
+      alert("Error durante el registro: " + error.message);
+    }
   };
 
   const onDelete = async () => {
-    if (window.confirm("¿Estás seguro de eliminar este usuario?")) {
-      /*try {
-        const result = await deleteUser(formData.id);
+    if (window.confirm("¿Estás seguro de eliminar este alumno?")) {
+      try {
+        const result = await deleteStudent(formData);
         if (result) {
-          alert("Usuario eliminado correctamente");
-          setFormData({ id: "", name: "", surname: "", group_id: "" });
-          setIsUserFound(false);
+          alert("Usuario eliminado exitosamente");
+          navigate("/home");
         } else {
-          alert("Error al eliminar el usuario");
+          alert("Error al realizar acción");
         }
       } catch (error) {
-        alert("Error al eliminar: " + error.message);
-      }*/
+        alert("Error durante el registro: " + error.message);
+      }    
     }
   };
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh" sx={{ backgroundColor: "#26355e" }}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+      sx={{ backgroundColor: "#26355e" }}
+    >
       <SearchBar
         title="Buscar usuario"
         value={formData.id}
@@ -103,7 +131,9 @@ const RegisterUserPage = () => {
       <Card title={isUserFound ? "Editar usuario" : "Registro de Usuario"}>
         <form onSubmit={handleSubmit(isUserFound ? onUpdate : onSubmit)}>
           <Input
-            {...register("name", { required: "El nombre es obligatorio" })}
+            {...register("name", {
+              required: !isUserFound && "El nombre es obligatorio", // Solo requerido en modo registro
+            })}
             name="name"
             label="Nombre"
             value={formData.name}
@@ -114,9 +144,11 @@ const RegisterUserPage = () => {
             helperText={errors.name?.message}
             disabled={isUserFound} // Deshabilita en modo actualizar
           />
-          
+
           <Input
-            {...register("surname", { required: "Los apellidos son obligatorios" })}
+            {...register("surname", {
+              required: !isUserFound && "Los apellidos son obligatorios", // Solo requerido en modo registro
+            })}
             name="surname"
             label="Apellidos"
             value={formData.surname}
@@ -129,7 +161,13 @@ const RegisterUserPage = () => {
           />
 
           <Input
-            {...register("group_id", { required: "El grupo es obligatorio" })}
+            {...register("group_id", {
+              required: "El grupo es obligatorio",
+              pattern: {
+                value: /^[A-Za-z]\d{3}$/,
+                message: "Debe iniciar con una letra seguida de 3 números (Ej: T228, E182, M890)",
+              },
+            })}
             name="group_id"
             label="Grupo"
             value={formData.group_id}
@@ -140,11 +178,29 @@ const RegisterUserPage = () => {
             helperText={errors.group_id?.message}
           />
 
+
           <Input
-            {...register("id", { 
-              required: "La matrícula es obligatoria",
+            {...register("term", {
+              required: !isUserFound && "El cuatrimestre es obligatorio", 
+              valueAsNumber: true,
+              min: {value: 1, message: "El cuatrimestre minimo es 1"}
+            })}
+            name="term"
+            label="Cuatrimestre"
+            value={formData.term}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            error={!!errors.term}
+            helperText={errors.term?.message}
+            disabled={isUserFound} // Deshabilita en modo actualizar
+          />  
+
+          <Input
+            {...register("id", {
+              required: !isUserFound && "La matrícula es obligatoria", // Solo requerido en modo registro
               minLength: { value: 10, message: "La matrícula debe tener exactamente 10 caracteres" },
-              maxLength: { value: 10, message: "La matrícula debe tener exactamente 10 caracteres" }
+              maxLength: { value: 10, message: "La matrícula debe tener exactamente 10 caracteres" },
             })}
             name="id"
             label="Matrícula"
@@ -162,12 +218,12 @@ const RegisterUserPage = () => {
           </Button>
 
           {isUserFound && (
-            <Button 
-              variant="contained" 
-              color="error" 
-              fullWidth 
-              onClick={onDelete} 
-              sx={{ marginTop: 2 }}
+            <Button
+              variant="contained"
+              color="error"
+              fullWidth
+              onClick={onDelete}
+              sx={{ marginTop: 1 }}
             >
               Eliminar Usuario
             </Button>
@@ -178,4 +234,4 @@ const RegisterUserPage = () => {
   );
 };
 
-export default RegisterUserPage;
+export default ManageStudentPage;

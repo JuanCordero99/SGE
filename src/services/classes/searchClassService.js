@@ -1,6 +1,6 @@
 export const searchUser = async (formData) => {
     try {
-        const response = await fetch("https://gse.zeabur.app/api/student/find", {
+        const response = await fetch("http://localhost:8080/api/student/find", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

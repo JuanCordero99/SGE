@@ -7,8 +7,8 @@ const SelectionUserPage = () => {
   return (
     <Container sx={{ backgroundColor: theme.palette.background }}>
       <Typography variant="h4" sx={{color: "s"}}>Panel Administrador</Typography>
-      <NavCard title={"Registro de alumnos"} route={"/register-user"}/>
-      <NavCard title={"Registro de docentes"} route={"/register-class"}/>
+      <NavCard title={"Gestión de alumnos"} route={"/register-user"}/>
+      <NavCard title={"Gestión de docentes"} route={"/manage-teacher"}/>
     </Container>
   );
 };

@@ -8,7 +8,7 @@ const HomePage = () => {
     <Container>
       <Typography variant="h4" sx={{}}>Panel Administrador</Typography>
       <NavCard title={"Gestión de usuarios"} route={"/select-user"}/>
-      <NavCard title={"Gestión de clases"} route={"/register-class"}/>
+      <NavCard title={"Gestión de clases"} route={"/manage-classes"}/>
       <NavCard title={"Reportes"} route={"/reports"}/>
       <NavCard title={"Gráficas"} route={"/graphs"}/>
     </Container>

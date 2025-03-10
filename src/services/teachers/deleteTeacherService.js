@@ -1,21 +1,16 @@
 // src/services/userService.js
-export const registerUser = async (formData) => {
+export const deleteTeacher = async (formData) => {
     try {
-      const response = await fetch("https://gse.zeabur.app/api/student/new", {
+      const response = await fetch("http://localhost:8080/api/teacher/update/Status", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           id: formData.id,
-          name: formData.name,
-          surname: formData.surname,
-          group_id: formData.group_id,
           user: {
-            profile: 2,
-            password: formData.id,
-            status: 1
-          },
+            status: 0
+          }
         }),
       });
   
@@ -26,7 +21,7 @@ export const registerUser = async (formData) => {
       console.log(`DATA: ${response.json}`);
       return await response.json();
     } catch (error) {
-      console.error("Error durante el registro:", error);
+      console.error("Error al realizar la peticion :", error);
       throw error;
     }
   };
