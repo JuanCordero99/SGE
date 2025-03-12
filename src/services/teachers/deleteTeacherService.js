@@ -1,7 +1,7 @@
 // src/services/userService.js
 export const deleteTeacher = async (formData) => {
     try {
-      const response = await fetch("https://gse-backend.zeabur.app/api/teacher/update/Status", {
+      const response = await fetch("http://localhost:8080/api/teacher/update/Status", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

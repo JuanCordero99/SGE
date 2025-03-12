@@ -1,94 +1,167 @@
-import React, { useState } from "react";
-import { Box, Typography, Card, CardContent } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Button,
+  Typography,
+} from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import SearchBar from "../components/common/searchBar";
-import { searchClassesByGroup } from "../services/classes/searchClassService";
+import Input from "../components/common/Input";
+import Card from "../components/common/Card";
+import Select from "../components/common/Select";
+import { getClassService } from "../services/classes/GetSubjectService";
+import { updateClassService } from "../services/classes/updateClassService"; // Importa el servicio de actualización
 
-const UpdateClassPage = () => {
-  const [classes, setClasses] = useState([]);
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
-  const [formData, setFormData] = useState({ group_id: "" });
+const ManageClassPage = ({ routes }) => {
+  const { idClase } = useParams();
+  const [classData, setClassData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Manejador de búsqueda
-  const handleSearch = async () => {
+  const [formData, setFormData] = useState({
+    id: idClase,
+    day: "",
+    in_hour: "",
+    fn_hour: "",
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const navigate = useNavigate();
+
+  // Obtén los datos de la clase cuando el componente se monte
+  useEffect(() => {
+    const fetchClassData = async () => {
+      try {
+        const data = await getClassService(idClase);
+        setClassData(data.clazz);
+        setFormData({
+          id: data.clazz.id,
+          day: data.clazz.day,
+          in_hour: data.clazz.in_hour,
+          fn_hour: data.clazz.fn_hour,
+        });
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchClassData();
+  }, [idClase]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const onSubmit = async () => {
     try {
-      const data = await searchClassesByGroup(formData); // Llamada a la API
-      console.log("Respuesta de la API:", data); // Verificar los datos recibidos de la API
-
-      if (data.success) {
-        const filteredClasses = data.clazzList.filter((clazz) => clazz.status === 1); // Filtrar clases con status = 1
-        console.log("Clases filtradas:", filteredClasses); // Verificar las clases filtradas
-        setClasses(filteredClasses); // Establecer las clases en el estado
+      const result = await updateClassService(formData); // Usa el servicio de actualización
+      if (result.success) {
+        alert("Clase actualizada exitosamente");
+        navigate("/home");
       } else {
-        setClasses([]); // Si no se encuentra ninguna clase, vaciar el array
-        alert("No se encontraron clases para el grupo");
+        alert("Error al actualizar la clase: " + result.message);
       }
     } catch (error) {
-      console.error("Error al buscar clases:", error);
-      setClasses([]); // Limpiar el estado si ocurre un error
+      alert("Error durante la actualización: " + error.message);
     }
   };
 
-  // Manejador de cambio de input
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, group_id: e.target.value }));
-  };
+  if (loading) {
+    return <Typography>Cargando...</Typography>;
+  }
+
+  if (error) {
+    return <Typography>Error: {error}</Typography>;
+  }
 
   return (
-    <Box sx={{ padding: 3 }}>
-      {/* Mostrar solo el SearchBar antes de la búsqueda */}
-      <SearchBar
-        title="Buscar Grupo"
-        label="Grupo"
-        name="group_id"
-        value={formData.group_id}
-        onChange={handleChange}
-        onSearch={handleSearch}
-        error={!!errors.group_id} // Error si no es válido
-        helperText={errors.group_id?.message} // Mostrar el mensaje de error
-        sx={{ width: "100%" }}
-        register={register("group_id", {
-          required: "El grupo es obligatorio", // Validación de campo obligatorio
-          pattern: {
-            value: /^[A-Za-z]\d{3}$/, // Expresión regular para validar el formato
-            message: "Debe iniciar con una letra seguida de 3 números (Ej: T228, E182, M890)",
-          },
-        })}
-      />
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      height="100vh"
+      sx={{ backgroundColor: "#26355e", padding: "40px" }}
+    >
+      <Card title="Actualización de Clase" sx={{ padding: "30px" }}>
+        {classData && (
+          <Typography variant="h4" gutterBottom>
+            {classData.subject.name} - Grupo {classData.groupId} - Profesor{" "}
+            {classData.teacher.name} {classData.teacher.surname}
+          </Typography>
+        )}
 
-      {/* Mostrar las cards solo después de la búsqueda y cuando hay clases */}
-      {classes.length > 0 ? (
-        <Box sx={{ marginTop: 3 }}>
-          {classes.map((clazz) => (
-            <Card
-              key={clazz.id}
-              sx={{ marginBottom: 2, cursor: "pointer" }}
-              onClick={() => window.location.href = `/class/edit/${clazz.id}`}
-            >
-              <CardContent sx={{ color: "black" }}> {/* Cambiar color a negro */}
-                <Typography variant="h5" sx={{ fontWeight: "bold", color: "black" }}>
-                  {clazz.subject.name}
-                </Typography>
-                <Typography variant="h6" sx={{ fontWeight: "bold", color: "black" }}>
-                  {clazz.groupId}
-                </Typography>
-                <Typography variant="body1" sx={{ color: "black" }}>
-                  {clazz.teacher.name} {clazz.teacher.surname}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "black" }}>
-                  {clazz.day} | {clazz.in_hour} - {clazz.fn_hour}
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
-      ) : formData.group_id && (
-        <Typography variant="body1" color="error">
-          No se encontraron clases para este grupo.
-        </Typography>
-      )}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Select
+            label="Día"
+            name="day"
+            value={formData.day}
+            onChange={handleChange}
+            options={[
+              { label: "Lunes", value: "Lunes" },
+              { label: "Martes", value: "Martes" },
+              { label: "Miércoles", value: "Miércoles" },
+              { label: "Jueves", value: "Jueves" },
+              { label: "Viernes", value: "Viernes" },
+            ]}
+          />
+
+          <Input
+            {...register("in_hour", {
+              required: "La hora de entrada es obligatoria",
+              pattern: {
+                value: /^([0-9]{2}):([0-5][0-9]):([0-5][0-9])$/,
+                message: "Formato inválido. Usa HH:MM:SS (24h)",
+              },
+            })}
+            name="in_hour"
+            label="Hora de entrada"
+            value={formData.in_hour}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            error={!!errors.in_hour}
+            helperText={errors.in_hour?.message}
+          />
+
+          <Input
+            {...register("fn_hour", {
+              required: "La hora de salida es obligatoria",
+              pattern: {
+                value: /^([0-9]{2}):([0-5][0-9]):([0-5][0-9])$/,
+                message: "Formato inválido. Usa HH:MM:SS (24h)",
+              },
+            })}
+            name="fn_hour"
+            label="Hora de salida"
+            value={formData.fn_hour}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            error={!!errors.fn_hour}
+            helperText={errors.fn_hour?.message}
+          />
+
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{ marginTop: "20px", padding: "12px" }}
+          >
+            Actualizar Clase
+          </Button>
+        </form>
+      </Card>
     </Box>
   );
 };
 
-export default UpdateClassPage;
+export default ManageClassPage;

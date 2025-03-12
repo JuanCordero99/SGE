@@ -1,7 +1,7 @@
 // src/services/userService.js
 export const newTeacher = async (formData) => {
     try {
-      const response = await fetch("https://gse-backend.zeabur.app//api/teacher/new", {
+      const response = await fetch("http://localhost:8080/api/teacher/new", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

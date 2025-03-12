@@ -1,6 +1,6 @@
 export const searchClassesByGroup = async (formData) => {
   try {
-    const response = await fetch("https://gse-backend.zeabur.app/api/class/find/ByGroup", {
+    const response = await fetch("http://localhost:8080/api/class/find/ByGroup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

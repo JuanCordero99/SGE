@@ -1,23 +1,21 @@
 import { useState, useEffect } from "react";
-import { Table, TableHead, TableBody, TableRow, TableCell } from "@mui/material";
+import { Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper } from "@mui/material";
 
 const ReportTable = () => {
   const [salesData, setSalesData] = useState([]);
 
   useEffect(() => {
-    // Función para obtener los datos de la API
     const fetchData = async () => {
       try {
-        const response = await fetch("https://gse-backend.zeabur.app/sendData/getData");
+        const response = await fetch("http://localhost:8080/sendData/getData");
         if (response.ok) {
           const result = await response.json();
-          // Transformamos la respuesta de la API para que se ajuste al formato de la tabla
           const data = result.map((item) => ({
-            id: item._class, // Puedes cambiar este campo por cualquier campo único
-            product: "Luz", // Aquí asignamos 'Luz' al campo "Dispositivo"
-            amount: `${item.status ? 'Encendida' : 'Apagada'}`, // Aquí puedes cambiarlo por un estado de la luz
-            date: item.date, // Extraemos la fecha del API
-            hour: item.hour, // Extraemos la hora del API
+            id: item._class,
+            product: item.device,
+            amount: `${item.status ? 'Encendido' : 'Apagado'}`,
+            date: item.date,
+            hour: item.hour,
           }));
           setSalesData(data);
         } else {
@@ -29,29 +27,31 @@ const ReportTable = () => {
     };
 
     fetchData();
-  }, []); // El array vacío asegura que solo se ejecute una vez al montar el componente
+  }, []);
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell sx={{ color: "black" }} variant="h4">Dispositivo</TableCell>
-          <TableCell sx={{ color: "black" }} variant="h4">Estado</TableCell>
-          <TableCell sx={{ color: "black" }} variant="h4">Fecha</TableCell>
-          <TableCell sx={{ color: "black" }} variant="h4">Hora</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {salesData.map((device) => (
-          <TableRow key={device.id}>
-            <TableCell sx={{ color: "black" }}>{device.product}</TableCell>
-            <TableCell sx={{ color: "black" }}>{device.amount}</TableCell>
-            <TableCell sx={{ color: "black" }}>{device.date}</TableCell>
-            <TableCell sx={{ color: "black" }}>{device.hour}</TableCell>
+    <TableContainer component={Paper} sx={{ borderRadius: 2, boxShadow: 3, overflow: "hidden", marginTop:2, marginBottom:2 }}>
+      <Table sx={{marginTop: 2, marginBottom:2}}>
+        <TableHead>
+          <TableRow sx={{ backgroundColor: "#1976d2" }}>
+            <TableCell sx={{ color: "black", fontWeight: "bold" }}>Dispositivo</TableCell>
+            <TableCell sx={{ color: "black", fontWeight: "bold" }}>Estado</TableCell>
+            <TableCell sx={{ color: "black", fontWeight: "bold" }}>Fecha</TableCell>
+            <TableCell sx={{ color: "black", fontWeight: "bold" }}>Hora</TableCell>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHead>
+        <TableBody>
+          {salesData.map((device, index) => (
+            <TableRow key={device.id} sx={{ backgroundColor: index % 2 === 0 ? "#f5f5f5" : "white" }}>
+              <TableCell sx={{color:"black"}}>{device.product.charAt(0).toUpperCase() + device.product.slice(1)}</TableCell>
+              <TableCell sx={{color:"black"}}>{device.amount}</TableCell>
+              <TableCell sx={{color:"black"}}>{device.date}</TableCell>
+              <TableCell sx={{color:"black"}}>{device.hour}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
