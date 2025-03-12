@@ -7,7 +7,7 @@ const ReportTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/sendData/getData");
+        const response = await fetch("https://gse-backend.zeabur.app/sendData/getData");
         if (response.ok) {
           const result = await response.json();
           const data = result.map((item) => ({

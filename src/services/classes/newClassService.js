@@ -1,7 +1,7 @@
 
 export const newClassService = async (formData) => {
     try {
-      const response = await fetch("http://localhost:8080/api/class/new", {
+      const response = await fetch("https://gse-backend.zeabur.app/api/class/new", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
