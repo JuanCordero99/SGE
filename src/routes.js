@@ -1,7 +1,6 @@
-// src/routes.js
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PrivateRoute from "./PrivateRoute"; // Importamos PrivateRoute
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import PrivateRoute from "./PrivateRoute";
 
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
@@ -16,59 +15,32 @@ import ReportsPage from "./pages/ReportsPage";
 import GraphsPage from "./pages/GraphsPage";
 import SelectionUserPage from "./pages/SelectionUserPage";
 
+const clientId = "611254798930-4osfr4b1dnm4a5nmk6j17a168e4mhe3u.apps.googleusercontent.com";
+
 const AppRoutes = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        
-        {/* Rutas protegidas con PrivateRoute */}
-        <Route
-          path="/home"
-          element={<PrivateRoute element={<HomePage />} />}
-        />
-        <Route
-          path="/register-user"
-          element={<PrivateRoute element={<ManageStudentPage />} />}
-        />
-        <Route
-          path="/manage-teacher"
-          element={<PrivateRoute element={<ManageTeacherPage />} />}
-        />
-        <Route
-          path="/select-user"
-          element={<PrivateRoute element={<SelectionUserPage />} />}
-        />
-        <Route
-          path="/manage-users"
-          element={<PrivateRoute element={<ManageUsersPage />} />}
-        />
-        <Route
-          path="/manage-classes"
-          element={<PrivateRoute element={<ManageClassesPage />} />}
-        />
-        <Route
-          path="/register-class"
-          element={<PrivateRoute element={<RegisterClassPage />} />}
-        />
-        <Route
-          path="/search-class"
-          element={<PrivateRoute element={<SearchClassPage />} />}
-        />
-        <Route
-          path="/update-class/:idClase"
-          element={<PrivateRoute element={<UpdateClassPage />} />}
-        />
-        <Route
-          path="/reports"
-          element={<PrivateRoute element={<ReportsPage />} />}
-        />
-        <Route
-          path="/graphs"
-          element={<PrivateRoute element={<GraphsPage />} />}
-        />
-      </Routes>
-    </Router>
+    <GoogleOAuthProvider clientId={clientId}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          
+          {/* Rutas protegidas con PrivateRoute */}
+          <Route path="/home" element={<PrivateRoute element={<HomePage />} />} />
+          <Route path="/register-user" element={<PrivateRoute element={<ManageStudentPage />} />} />
+          <Route path="/manage-teacher" element={<PrivateRoute element={<ManageTeacherPage />} />} />
+          <Route path="/select-user" element={<PrivateRoute element={<SelectionUserPage />} />} />
+          <Route path="/manage-users" element={<PrivateRoute element={<ManageUsersPage />} />} />
+          <Route path="/manage-classes" element={<PrivateRoute element={<ManageClassesPage />} />} />
+          <Route path="/register-class" element={<PrivateRoute element={<RegisterClassPage />} />} />
+          <Route path="/search-class" element={<PrivateRoute element={<SearchClassPage />} />} />
+          <Route path="/update-class/:idClase" element={<PrivateRoute element={<UpdateClassPage />} />} />
+          
+          {/* Rutas protegidas con Google Login */}
+          <Route path="/reports" element={<PrivateRoute element={<ReportsPage />} />} />
+          <Route path="/graphs" element={<PrivateRoute element={<GraphsPage />} />} />
+        </Routes>
+      </Router>
+    </GoogleOAuthProvider>
   );
 };
 

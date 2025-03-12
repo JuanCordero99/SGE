@@ -1,11 +1,10 @@
-// src/pages/LoginPage.js
-
 import React from "react";
 import { Button, Container, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Input from "../components/common/Input";
 import { authService } from "../services/loginService"; // Importa el servicio
+import { GoogleLogin } from "@react-oauth/google";
 
 const LoginPage = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -25,6 +24,17 @@ const LoginPage = () => {
     } else {
       alert("Login Failed");
     }
+  };
+
+  const handleGoogleSuccess = (response) => {
+    console.log("Google Login Success", response);
+    localStorage.setItem("user", JSON.stringify(response));
+    navigate("/home");
+  };
+
+  const handleGoogleFailure = (error) => {
+    console.log("Google Login Failed", error);
+    alert("Google Login Failed");
   };
 
   return (
@@ -66,6 +76,11 @@ const LoginPage = () => {
           Entrar
         </Button>
       </form>
+      <Typography align="center" marginY={2}>O</Typography>
+      <Container sx={{marginLeft: 8}}>
+        <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleFailure} />
+      </Container>
+
     </Container>
   );
 };
