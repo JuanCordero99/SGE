@@ -16,6 +16,7 @@ const LoginPage = () => {
     if (result) {
       console.log(`RESPONSE: ${result.response}`);
       if(result.user.profile == 0){
+        localStorage.setItem("user", JSON.stringify(result.user));
         alert("Login successful");
         navigate("/home");
       } else {
