@@ -14,7 +14,7 @@ const LoginPage = () => {
     const result = await authService(formData.email, formData.password);
     if (result) {
       console.log(`RESPONSE: ${result.response}`);
-      if(result.user.profile == 0){
+      if (result.user.profile === 0) {
         localStorage.setItem("user", JSON.stringify(result.user));
         alert("Login successful");
         navigate("/home");
@@ -61,6 +61,7 @@ const LoginPage = () => {
           {...register("password", { 
             required: "La contraseña es obligatoria",
             minLength: {
+              value: 6,
               message: "La contraseña debe tener al menos 6 caracteres"
             }
           })}
@@ -77,10 +78,9 @@ const LoginPage = () => {
         </Button>
       </form>
       <Typography align="center" marginY={2}>O</Typography>
-      <Container >
+      <Container>
         <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleFailure} />
       </Container>
-
     </Container>
   );
 };
