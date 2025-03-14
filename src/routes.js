@@ -4,6 +4,7 @@ import PrivateRoute from "./PrivateRoute";
 
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
+import HomePageVisitor from "./pages/HomePageVisitor";
 import ManageStudentPage from "./pages/ManageStudentPage";
 import ManageTeacherPage from "./pages/ManageTeacherPage";
 import ManageUsersPage from "./pages/ManageUsersPage";
@@ -15,7 +16,7 @@ import ReportsPage from "./pages/ReportsPage";
 import GraphsPage from "./pages/GraphsPage";
 import SelectionUserPage from "./pages/SelectionUserPage";
 
-const clientId = "611254798930-4osfr4b1dnm4a5nmk6j17a168e4mhe3u.apps.googleusercontent.com";
+const clientId = "560742763253-0kq0sri0hsr7u74h2qpo517lqejcmuls.apps.googleusercontent.com";
 
 const AppRoutes = () => {
   return (
@@ -36,6 +37,7 @@ const AppRoutes = () => {
           <Route path="/update-class/:idClase" element={<PrivateRoute element={<UpdateClassPage />} />} />
           
           {/* Rutas protegidas con Google Login */}
+          <Route path="/homeVisitor" element={<PrivateRoute element={<HomePageVisitor />} />} />
           <Route path="/reports" element={<PrivateRoute element={<ReportsPage />} />} />
           <Route path="/graphs" element={<PrivateRoute element={<GraphsPage />} />} />
         </Routes>

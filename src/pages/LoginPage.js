@@ -29,7 +29,7 @@ const LoginPage = () => {
   const handleGoogleSuccess = (response) => {
     console.log("Google Login Success", response);
     localStorage.setItem("user", JSON.stringify(response));
-    navigate("/home");
+    navigate("/homeVisitor");
   };
 
   const handleGoogleFailure = (error) => {
@@ -77,7 +77,7 @@ const LoginPage = () => {
         </Button>
       </form>
       <Typography align="center" marginY={2}>O</Typography>
-      <Container sx={{marginLeft: 8}}>
+      <Container >
         <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleFailure} />
       </Container>
 
