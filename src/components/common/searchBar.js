@@ -4,7 +4,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import Card from "./Card";
 import Input from "./Input";
 
-const SearchBar = forwardRef(({ title, label = "Buscar usuario", name, type = "text", error, helperText, onChange, onBlur, onSearch, value, ...rest }, ref) => {
+const SearchBar = forwardRef(({ title, label = "Buscar usuario", name, type = "text", 
+    error, helperText, onChange, onBlur, onSearch, value, ...rest }, ref) => {
     return (
         <Card title={title}>
             <Box display="flex" alignItems="center">

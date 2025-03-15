@@ -1,5 +1,6 @@
 // src/services/userService.js
 export const newTeacher = async (formData) => {
+    const secondname = formData.secondname || "";  
     try {
       const response = await fetch("https://gse-backend.zeabur.app/api/teacher/new", {
         method: "POST",
@@ -8,7 +9,7 @@ export const newTeacher = async (formData) => {
         },
         body: JSON.stringify({
           id: formData.id,
-          name: formData.name + " " + formData.secondname,
+          name: formData.name + " " + secondname,
           surname: formData.middlename +" " + formData.surname,
           group_id: formData.group_id,
           term: formData.term,

@@ -42,7 +42,7 @@ const ManageTeacherPage = () => {
     const id = formData.id || "";
     if (id.trim() !== "") {
       try {
-        if (id.length === 10) {
+        if (id.length >= 5) {
           const userData = await searchUser(formData);
           if (userData.success) {
             setFormData({
@@ -51,11 +51,9 @@ const ManageTeacherPage = () => {
               surname: userData.teacher.surname,
             });
             setIsUserFound(true);
-            console.log("DATA STATUS: " + userData.teacher.user);
-
-          }else { userData.teacher.user.status === 0 ? alert("El estudiante es baja") : alert("No se encontro el estudiante");}
+          }else { userData.teacher.user.status === 0 ? alert("El profesor es baja") : alert("No se encontro el profesor");}
         } else {
-          alert("La matrícula debe tener exactamente 10 caracteres.");
+          alert("El Id de trabajador debe tener mínimo 5 caracteres.");
         }
       } catch (error) {
         console.error("Error buscando usuario:", error);
@@ -107,8 +105,9 @@ const ManageTeacherPage = () => {
         value={formData.id}
         onChange={(e) => setFormData((prev) => ({ ...prev, id: e.target.value }))}
         onSearch={handleSearch}
-        error={formData.id.length !== 10 && formData.id !== ""}
-        helperText={formData.id.length !== 10 && formData.id !== "" ? "La matrícula debe tener 10 caracteres" : ""}
+        error={formData.id.length > 5 && formData.id.length < 10 && formData.id !== ""}
+        helperText={formData.id.length > 5 && formData.id.length < 10 && formData.id !== "" ? 
+          "El Id de trabajador debe tener máximo 10 caracteres" : ""}
       />
 
       <Card title={isUserFound ? "Editar Docente" : "Registro de Docente"}>
@@ -131,9 +130,6 @@ const ManageTeacherPage = () => {
           />
           
           {!isUserFound && (<Input
-            {...register("secondname", {
-              required: !isUserFound && "El nombre es obligatorio", // Solo requerido en modo registro
-            })}
             name="secondname"
             label="Segundo nombre"
             value={formData.secondname}
@@ -177,8 +173,8 @@ const ManageTeacherPage = () => {
 
           <Input
             {...register("id", {
-              required: !isUserFound && "El Id de trabajador es obligatorio", // Solo requerido en modo registro
-              minLength: { value: 10, message: "El Id de trabajador debe tener 10 caracteres" },
+              required: !isUserFound && "El Id de trabajador es obligatorio",
+              minLength: { value: 5, message: "El Id de trabajador debe tener 10 caracteres" },
               maxLength: { value: 10, message: "El Id de trabajador debe tener 10 caracteres" },
             })}
             name="id"

@@ -21,6 +21,7 @@ const ManageClassPage = () => {
     day: "",
     in_hour: "",
     fn_hour: "",
+    place:""
   });
 
   const {
@@ -36,7 +37,18 @@ const ManageClassPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
+    if (data.in_hour >= data.fn_hour) {
+      alert("La hora inicial no puede ser mayor o igual a la hora final");
+      return;
+    }
+
+    // Validación: no se permiten horas medias
+    const isFullHour = (hour) => /^([0-9]{2}):00:00$/.test(hour);
+    if (!isFullHour(data.in_hour) || !isFullHour(data.fn_hour)) {
+      alert("Las horas deben ser completas, no se permiten horas medias (ejemplo: 07:00:00, 22:00:00)");
+      return;
+    }
     try {
       const result = await newClassService(formData);
       if (result) {
@@ -84,9 +96,10 @@ const ManageClassPage = () => {
           />
 
           <Input
-            {...register("workerId", {
-              required: "El ID del profesor es obligatorio",
-            })}
+          {...register("workerId", {
+            minLength: { value: 5, message: "El Id de trabajador debe tener 10 caracteres" },
+            maxLength: { value: 10, message: "El Id de trabajador debe tener 10 caracteres" },
+          })}
             name="workerId"
             label="ID del Profesor"
             value={formData.workerId}
@@ -134,8 +147,8 @@ const ManageClassPage = () => {
             {...register("in_hour", {
               required: "La hora de entrada es obligatoria",
               pattern: {
-                value: /^([0-9]{2}):([0-5][0-9]):([0-5][0-9])$/,
-                message: "Formato inválido. Usa HH:MM:SS (24h)",
+                value: /^([0-9]{2}):00:00$/, 
+                message: "Las horas deben ser completas. Usa HH:MM:SS (24h)",
               },
             })}
             name="in_hour"
@@ -152,8 +165,8 @@ const ManageClassPage = () => {
             {...register("fn_hour", {
               required: "La hora de salida es obligatoria",
               pattern: {
-                value: /^([0-9]{2}):([0-5][0-9]):([0-5][0-9])$/,
-                message: "Formato inválido. Usa HH:MM:SS (24h)",
+                value: /^([0-9]{2}):00:00$/,
+                message: "Las horas deben ser completas. Usa HH:MM:SS (24h)",
               },
             })}
             name="fn_hour"
@@ -164,6 +177,20 @@ const ManageClassPage = () => {
             margin="normal"
             error={!!errors.fn_hour}
             helperText={errors.fn_hour?.message}
+          />
+
+          <Input
+            {...register("place", {
+              required: "El lugar de la clase es obligatorio",
+            })}
+            name="place"
+            label="Aula y edificio"
+            value={formData.place}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            error={!!errors.place}
+            helperText={errors.place?.message}
           />
 
           <Button

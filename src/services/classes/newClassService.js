@@ -16,7 +16,8 @@ export const newClassService = async (formData) => {
             day: formData.day,
             in_hour: formData.in_hour,
             fn_hour: formData.fn_hour,
-            status: 1
+            status: 1,
+            place: formData.place
         }),
       });
   
