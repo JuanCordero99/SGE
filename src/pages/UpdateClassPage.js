@@ -1,50 +1,32 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Input from "../components/common/Input";
 import Card from "../components/common/Card";
 import Select from "../components/common/Select";
 import { getClassService } from "../services/classes/GetSubjectService";
-import { updateClassService } from "../services/classes/updateClassService"; // Importa el servicio de actualización
+import { updateClassService } from "../services/classes/updateClassService";
 
 const ManageClassPage = ({ routes }) => {
   const { idClase } = useParams();
   const [classData, setClassData] = useState(null);
+  const [formData, setFormData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const [formData, setFormData] = useState({
-    id: idClase,
-    day: "",
-    in_hour: "",
-    fn_hour: "",
-  });
-
+  const navigate = useNavigate();
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const navigate = useNavigate();
-
-  // Obtén los datos de la clase cuando el componente se monte
   useEffect(() => {
     const fetchClassData = async () => {
       try {
         const data = await getClassService(idClase);
         setClassData(data.clazz);
-        setFormData({
-          id: data.clazz.id,
-          day: data.clazz.day,
-          in_hour: data.clazz.in_hour,
-          fn_hour: data.clazz.fn_hour,
-        });
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -55,32 +37,42 @@ const ManageClassPage = ({ routes }) => {
     fetchClassData();
   }, [idClase]);
 
+  useEffect(() => {
+    if (classData) {
+      setFormData({
+        id: classData.id,
+        day: classData.day,
+        groupId: classData.groupId,
+        in_hour: classData.in_hour,
+        fn_hour: classData.fn_hour,
+      });
+    }
+  }, [classData]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const onSubmit = async () => {
+    if (!formData) return;
     try {
-      const result = await updateClassService(formData); // Usa el servicio de actualización
+      const result = await updateClassService(formData);
       if (result.success) {
         alert("Clase actualizada exitosamente");
         navigate("/home");
       } else {
-        alert("Error al actualizar la clase: " + result.message);
+        alert("Error al actualizar la clase: " + result.response 
+          + `\nMaestro con esa hora y clase: ${result.classFindByDTO.teacher}`);
       }
     } catch (error) {
       alert("Error durante la actualización: " + error.message);
     }
   };
 
-  if (loading) {
-    return <Typography>Cargando...</Typography>;
-  }
-
-  if (error) {
-    return <Typography>Error: {error}</Typography>;
-  }
+  if (loading) return <Typography>Cargando...</Typography>;
+  if (error) return <Typography>Error: {error}</Typography>;
+  if (!formData) return null;
 
   return (
     <Box
@@ -94,8 +86,7 @@ const ManageClassPage = ({ routes }) => {
       <Card title="Actualización de Clase" sx={{ padding: "30px" }}>
         {classData && (
           <Typography variant="h4" gutterBottom>
-            {classData.subject.name} - Grupo {classData.groupId} - Profesor{" "}
-            {classData.teacher.name} {classData.teacher.surname}
+            {classData.subject.name} - Grupo {classData.groupId} - Profesor {classData.teacher.name} {classData.teacher.surname}
           </Typography>
         )}
 
