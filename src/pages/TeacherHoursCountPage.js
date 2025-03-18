@@ -8,7 +8,7 @@ const TeacherHoursTable = () => {
     const fetchData = async () => {
       try {
         console.log("Iniciando la solicitud al API...");
-        const response = await fetch("http://localhost:8080/api/view/teacher/count/hours", {
+        const response = await fetch("https://gse-backend.zeabur.app/api/view/teacher/count/hours", {
           method: "GET",
           mode: "cors",
           headers: {
