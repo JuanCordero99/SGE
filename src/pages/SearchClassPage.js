@@ -16,7 +16,7 @@ const SearchClassPage = () => {
       console.log("Respuesta de la API:", data); // Verificar los datos recibidos de la API
 
       if (data.success) {
-        const filteredClasses = data.clazzList.filter((clazz) => clazz.status === 1); // Filtrar clases con status = 1
+        const filteredClasses = data.list.filter((clazz) => clazz.status === 1); // Filtrar clases con status = 1
         console.log("Clases filtradas:", filteredClasses); // Verificar las clases filtradas
         setClasses(filteredClasses); // Establecer las clases en el estado
       } else {

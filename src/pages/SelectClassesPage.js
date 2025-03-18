@@ -9,6 +9,7 @@ const SelectionClassPage = () => {
       <Typography variant="h4" sx={{color: "s"}}>Panel Administrador</Typography>
       <NavCard title={"Registro de clase"} route={"/register-class"}/>
       <NavCard title={"Editar una clase"} route={"/search-class"}/>
+      <NavCard title={"Horas de clase"} route={"/class-hours"}/>
     </Container>
   );
 };

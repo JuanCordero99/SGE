@@ -8,13 +8,14 @@ import HomePageVisitor from "./pages/HomePageVisitor";
 import ManageStudentPage from "./pages/ManageStudentPage";
 import ManageTeacherPage from "./pages/ManageTeacherPage";
 import ManageUsersPage from "./pages/ManageUsersPage";
-import ManageClassesPage from "./pages/ManageClassesPage";
+import ManageClassesPage from "./pages/SelectClassesPage";
 import RegisterClassPage from "./pages/RegisterClassPage";
 import SearchClassPage from "./pages/SearchClassPage";
 import UpdateClassPage from "./pages/UpdateClassPage";
 import ReportsPage from "./pages/ReportsPage";
 import GraphsPage from "./pages/GraphsPage";
 import SelectionUserPage from "./pages/SelectionUserPage";
+import TeacherHoursTable from "./pages/TeacherHoursCountPage";
 
 const clientId = "560742763253-0kq0sri0hsr7u74h2qpo517lqejcmuls.apps.googleusercontent.com";
 
@@ -34,6 +35,7 @@ const AppRoutes = () => {
           <Route path="/manage-classes" element={<PrivateRoute element={<ManageClassesPage />} />} />
           <Route path="/register-class" element={<PrivateRoute element={<RegisterClassPage />} />} />
           <Route path="/search-class" element={<PrivateRoute element={<SearchClassPage />} />} />
+          <Route path="/class-hours" element={<PrivateRoute element={<TeacherHoursTable />} />} />
           <Route path="/update-class/:idClase" element={<PrivateRoute element={<UpdateClassPage />} />} />
           
           {/* Rutas protegidas con Google Login */}

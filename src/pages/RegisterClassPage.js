@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
   InputLabel,
   FormControl,
+  TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Input from "../components/common/Input";
 import Card from "../components/common/Card";
-import {newClassService} from "../services/classes/newClassService";
+import { newClassService } from "../services/classes/newClassService";
 import Select from "../components/common/Select";
 
 const ManageClassPage = () => {
@@ -21,8 +22,12 @@ const ManageClassPage = () => {
     day: "",
     in_hour: "",
     fn_hour: "",
-    place:""
+    place: "",
   });
+
+  const [teachers, setTeachers] = useState([]);
+  const [filteredTeachers, setFilteredTeachers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const {
     register,
@@ -31,6 +36,36 @@ const ManageClassPage = () => {
   } = useForm();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch all teachers from API
+    const fetchTeachers = async () => {
+      try {
+        const response = await fetch("https://gse-backend.zeabur.app/api/teacher/get/AllTeachers");
+        const data = await response.json();
+        if (data.success) {
+          setTeachers(data.list);
+          setFilteredTeachers(data.list); // Initialize filtered list with all teachers
+        } else {
+          alert("Error al obtener los maestros");
+        }
+      } catch (error) {
+        alert("Error al obtener los maestros");
+      }
+    };
+    fetchTeachers();
+  }, []);
+
+  useEffect(() => {
+    // Filter teachers based on search term
+    setFilteredTeachers(
+      teachers.filter((teacher) =>
+        `${teacher.name} ${teacher.surname}`
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, teachers]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,19 +130,15 @@ const ManageClassPage = () => {
             options={[...Array(12)].map((_, i) => ({ label: `${i + 1}`, value: `${i + 1}` }))}
           />
 
-          <Input
-          {...register("workerId", {
-            minLength: { value: 5, message: "El Id de trabajador debe tener 10 caracteres" },
-            maxLength: { value: 10, message: "El Id de trabajador debe tener 10 caracteres" },
-          })}
+          <Select
+            label="Profesor"
             name="workerId"
-            label="ID del Profesor"
             value={formData.workerId}
             onChange={handleChange}
-            fullWidth
-            margin="normal"
-            error={!!errors.workerId}
-            helperText={errors.workerId?.message}
+            options={filteredTeachers.map((teacher) => ({
+              label: `${teacher.name} ${teacher.surname}`,
+              value: teacher.id,
+            }))}
           />
 
           <Input
@@ -115,8 +146,7 @@ const ManageClassPage = () => {
               required: "El grupo es obligatorio",
               pattern: {
                 value: /^[A-Za-z]\d{3}$/,
-                message:
-                  "Debe iniciar con una letra seguida de 3 números (Ej: T228)",
+                message: "Debe iniciar con una letra seguida de 3 números (Ej: T228)",
               },
             })}
             name="groupId"
@@ -147,7 +177,7 @@ const ManageClassPage = () => {
             {...register("in_hour", {
               required: "La hora de entrada es obligatoria",
               pattern: {
-                value: /^([0-9]{2}):00:00$/, 
+                value: /^([0-9]{2}):00:00$/,
                 message: "Las horas deben ser completas. Usa HH:MM:SS (24h)",
               },
             })}
