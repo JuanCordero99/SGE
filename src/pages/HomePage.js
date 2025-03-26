@@ -1,15 +1,20 @@
 import { Container, Typography, Button, Box } from "@mui/material";
 import NavCard from "../components/common/navCard";
 import { useNavigate } from "react-router-dom";
+import loginService from "../services/loginService";
 
 const HomePage = () => {
   const navigate = useNavigate();
   
-  const handleLogout = () => {
+  const handleLogout = async() => {
+    const jsonUser = JSON.parse(localStorage.getItem("user")); const userId= jsonUser ? jsonUser.id : null;
+    await loginService.logOutService(userId);
     localStorage.removeItem("user");
     alert("Logout successful");
     navigate("/");
   };
+
+  console.log("DATA OF SESSION: " + localStorage.getItem("user"));
 
   return (
     <Container sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", marginTop: 4 }}>

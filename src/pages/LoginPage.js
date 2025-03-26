@@ -3,7 +3,7 @@ import { Button, Container, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Input from "../components/common/Input";
-import { authService } from "../services/loginService"; // Importa el servicio
+import loginService from "../services/loginService"; 
 import { GoogleLogin } from "@react-oauth/google";
 
 const LoginPage = () => {
@@ -11,18 +11,23 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (formData) => {
-    const result = await authService(formData.email, formData.password);
+    const result = await loginService.authService(formData.email, formData.password);
     if (result) {
       console.log(`RESPONSE: ${result.response}`);
-      if (result.user.profile === 0) {
-        localStorage.setItem("user", JSON.stringify(result.user));
-        alert("Login successful");
-        navigate("/home");
+      if (result.success) {
+        if (result.user.profile === 0 && result.user.session <= 1) {
+          localStorage.setItem("user", JSON.stringify(result.user));
+          console.log("DATA RECEIVED: " + JSON.stringify(result.user));
+          alert("Login successful");
+          navigate("/home");
+        } else {
+          alert(result.response);
+        }
       } else {
-        alert("You're not an administrator ...");
+        alert(result.response);
       }
     } else {
-      alert("Login Failed");
+      alert(result.response);
     }
   };
 
