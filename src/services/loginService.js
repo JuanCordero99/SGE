@@ -1,6 +1,6 @@
 const authService = async (email, password) => {
     try {
-      const response = await fetch("http://192.168.100.110:8080/api/users/auth", {
+      const response = await fetch("https://gse-backend.zeabur.app/api/users/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,7 +27,7 @@ const authService = async (email, password) => {
 
 const logOutService = async (id) => {
   try {
-    const response = await fetch("http://192.168.100.110:8080/api/users/logout", {
+    const response = await fetch("https://gse-backend.zeabur.app/api/users/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

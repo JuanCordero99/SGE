@@ -14,8 +14,6 @@ const HomePage = () => {
     navigate("/");
   };
 
-  console.log("DATA OF SESSION: " + localStorage.getItem("user"));
-
   return (
     <Container sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", marginTop: 4 }}>
       <Typography variant="h4" align="center">Panel Administrador</Typography>

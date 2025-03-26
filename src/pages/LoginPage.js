@@ -17,7 +17,6 @@ const LoginPage = () => {
       if (result.success) {
         if (result.user.profile === 0 && result.user.session <= 1) {
           localStorage.setItem("user", JSON.stringify(result.user));
-          console.log("DATA RECEIVED: " + JSON.stringify(result.user));
           alert("Login successful");
           navigate("/home");
         } else {
@@ -32,13 +31,11 @@ const LoginPage = () => {
   };
 
   const handleGoogleSuccess = (response) => {
-    console.log("Google Login Success", response);
     localStorage.setItem("user", JSON.stringify(response));
     navigate("/homeVisitor");
   };
 
   const handleGoogleFailure = (error) => {
-    console.log("Google Login Failed", error);
     alert("Google Login Failed");
   };
 
