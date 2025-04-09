@@ -10,7 +10,7 @@ const ReportChart = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("https://gse-backend.zeabur.app/api/send/sensor/getAll", {
+      const response = await fetch("http://devmachape.tail0547c7.ts.net:8080/api/send/sensor/getAll", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

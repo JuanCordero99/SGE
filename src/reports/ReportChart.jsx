@@ -10,7 +10,7 @@ const ReportChart = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("https://gse-backend.zeabur.app/sendData/getData");
+      const response = await fetch("http://devmachape.tail0547c7.ts.net:8080/sendData/getData");
       const data = await response.json();
       
       const devices = ["calentador", "ventilador", "luz"];

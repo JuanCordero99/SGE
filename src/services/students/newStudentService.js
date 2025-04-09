@@ -1,7 +1,7 @@
 // src/services/userService.js
 export const registerUser = async (formData) => {
     try {
-      const response = await fetch("https://gse-backend.zeabur.app/api/student/new", {
+      const response = await fetch("http://devmachape.tail0547c7.ts.net:8080/api/student/new", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
