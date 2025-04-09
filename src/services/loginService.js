@@ -1,6 +1,6 @@
 const authService = async (email, password) => {
     try {
-      const response = await fetch("https://gse-backend.zeabur.app/api/users/auth", {
+      const response = await fetch("http://devmachape.tail0547c7.ts.net:8080/api/users/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
